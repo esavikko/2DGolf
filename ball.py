@@ -23,7 +23,8 @@ class Ball:
 
         if isinstance(next_position, tuple):
             self.check_if_moving()
-            self.position = next_position
+            if self.moving:
+                self.position = next_position
 
     def set_elasticity(self, elasticity) -> None:
         if isinstance(elasticity, float):
@@ -31,10 +32,9 @@ class Ball:
                 self.elasticity = elasticity
     
     def check_if_moving(self) -> None:
-        print(self.velocity[0], self.velocity[1])
-        print((np.abs(self.velocity[0]) < 0.1), (np.abs(self.velocity[1]) < 0.1))
         if (np.abs(self.velocity[0]) < 1) and (np.abs(self.velocity[1]) < 1):
                 print('Player has stopped moving.')
+                self.velocity = (0, 0)
                 self.moving = False
 
     def get_velocity(self) -> tuple:
@@ -44,7 +44,7 @@ class Ball:
         self.velocity = initial_velocity
     
     def calculate_velocity(self, t) -> None:
-        # print((self.velocity[0], self.acceleration[0]*t), (self.velocity[1], self.acceleration[1]*t))
+
         self.velocity = (
             (self.velocity[0] + self.acceleration[0]*t), (self.velocity[1] + self.acceleration[1]*t)
         )
