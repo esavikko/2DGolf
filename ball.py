@@ -22,17 +22,20 @@ class Ball:
     def set_position(self, next_position) -> None:
 
         if isinstance(next_position, tuple):
-
-            if (np.abs(next_position[0]) - np.abs(self.position[0]) <= 0.0001) and (np.abs(next_position[1]) - np.abs(self.position[1]) <= 0.0001):
-                print('Player has stopped moving.')
-                self.moving = False
-
+            self.check_if_moving()
             self.position = next_position
 
-            if self.collision:
-                print('INSIDE WALL')
-        
-        
+    def set_elasticity(self, elasticity) -> None:
+        if isinstance(elasticity, float):
+            if 0 < elasticity <= 1:
+                self.elasticity = elasticity
+    
+    def check_if_moving(self) -> None:
+        print(self.velocity[0], self.velocity[1])
+        print((np.abs(self.velocity[0]) < 0.1), (np.abs(self.velocity[1]) < 0.1))
+        if (np.abs(self.velocity[0]) < 1) and (np.abs(self.velocity[1]) < 1):
+                print('Player has stopped moving.')
+                self.moving = False
 
     def get_velocity(self) -> tuple:
         return self.velocity
@@ -41,12 +44,12 @@ class Ball:
         self.velocity = initial_velocity
     
     def calculate_velocity(self, t) -> None:
+        # print((self.velocity[0], self.acceleration[0]*t), (self.velocity[1], self.acceleration[1]*t))
         self.velocity = (
             (self.velocity[0] + self.acceleration[0]*t), (self.velocity[1] + self.acceleration[1]*t)
         )
 
     def set_acceleration(self, acceleration) -> None:
-        print(isinstance(acceleration, tuple))
         if isinstance(acceleration, tuple):
             self.acceleration = acceleration
 
