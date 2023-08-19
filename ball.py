@@ -78,16 +78,38 @@ class Ball:
         # check_position is defined as down_x, up_x, left_y, right_y
         if check_position[0] <= next_position[0] <= check_position[1]:
             if check_position[2] >= next_position[1] >= check_position[3]: # Y axis is reversed
+                # (wall.left, wall.right), 
+                # (wall.bottom, wall.top)
+                print('({},{}),'.format(np.abs(check_position[0] - next_position[0]), np.abs(next_position[0] - check_position[1])))
+                print('({},{}),'.format(np.abs(check_position[2] - next_position[1]), np.abs(next_position[1] - check_position[3])))
+
+                i = np.argmin(np.array(
+                    [np.abs(check_position[0] - next_position[0]), np.abs(next_position[0] - check_position[1]), 
+                    np.abs(check_position[2] - next_position[1]), np.abs(next_position[1] - check_position[3])])
+                )
+                wall_name = ('left', 'right', 'bottom', 'top')[i]
+                print(wall_name)
+
                 self.collision = True
+                return wall_name
+        return None
     
-    def resolve_collision(self, floor_x):
+    def resolve_collision(self, wall_coordinate, side):
 
-        dx = self.position[1] - floor_x
+        if side == 'top' or side == 'bottom':
+            dy = self.position[1] - wall_coordinate
 
-        self.position = (self.position[0], self.position[1] - dx)
-        self.velocity = (self.elasticity * self.velocity[0], -self.elasticity * self.velocity[1])
+            self.position = (self.position[0], self.position[1] - dy)
+            self.velocity = (self.elasticity * self.velocity[0], -self.elasticity * self.velocity[1])
 
-        self.collision = False
+            self.collision = False
+        
+        if side == 'left' or side == 'right':
+            dx = self.position[0] - wall_coordinate
+            self.position = (self.position[0] - dx, self.position[1])
+            self.velocity = (-self.elasticity * self.velocity[0], self.elasticity * self.velocity[1])
+
+
 
 
 
