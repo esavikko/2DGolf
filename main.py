@@ -14,7 +14,7 @@ dt = 0.002
 # Initialize first ball
 player_pos = (screen.get_width()*0.25, screen.get_height()*0.65)
 player = Ball(player_pos, 1, 10)
-player.set_colour("red")
+player.set_colour("dark green")
 player.set_acceleration((0, 98.1))
 player.set_elasticity(0.2)
 
@@ -70,9 +70,9 @@ while running:
             elif event.type == 1024:
                 draw_map()
                 draw_player()
-                pygame.draw.line(screen, "green", start_coordinates, pygame.mouse.get_pos(), 2)
+                pygame.draw.line(screen, "red", start_coordinates, pygame.mouse.get_pos(), 2)
 
-            # Render game
+            # Render game0
             pygame.display.flip()
         
         player.set_initial_velocity(
