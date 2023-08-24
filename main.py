@@ -16,22 +16,28 @@ player_pos = (screen.get_width()*0.25, screen.get_height()*0.65)
 player = Ball(player_pos, 1, 10)
 player.set_colour("dark green")
 player.set_acceleration((0, 98.1))
-player.set_elasticity(0.2)
+player.set_elasticity(0.5)
 
 # Testing data:
 # player.set_initial_velocity((50, -100))
 # player.moving = True
 
 # Initialize map
-floor = pygame.Rect(0, screen.get_height()*0.85, screen.get_width(), 100)
-floor_color = "purple"
+floor = pygame.Rect(0, screen.get_height()*0.95, screen.get_width(), screen.get_height()*0.05)
+ceiling = pygame.Rect(0, 0, screen.get_width(), screen.get_height()*0.05)
+left_wall = pygame.Rect(0, 0, screen.get_width()*0.025, screen.get_height())
+right_wall = pygame.Rect(screen.get_width()*0.975, 0, screen.get_width()*0.025, screen.get_height())
+walls = [floor, ceiling, left_wall, right_wall]
+wall_color = "purple"
 background_color = "grey"
 
 def draw_map():
     # Initialize screen
     screen.fill(background_color)
     # Draw map objects
-    pygame.draw.rect(screen, floor_color, floor)
+    for wall in walls:
+        pygame.draw.rect(screen, wall_color, wall)
+
 
 def draw_player():
     pygame.draw.circle(screen, player.get_colour(), player.get_position(), player.get_radius())
@@ -89,12 +95,15 @@ while running:
         while player.moving:
             
             # Check if the player will collide in the next position (with floor)
-            collision = player.check_collision(
-                (floor.left, floor.right, floor.bottom, floor.top), dt
-            )
+            for wall in walls:
+                side = player.check_collision(
+                    (wall.left, wall.right, wall.bottom, wall.top), dt
+                )
+                if side is not None:
+                    wall_side = getattr(wall, side)
             
-            if player.collision:
-                player.resolve_collision(floor.top)
+                if player.collision:
+                    player.resolve_collision(wall_side, side)
 
             player.set_position(
                 player.calculate_next_position(dt)
